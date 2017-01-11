@@ -17,6 +17,11 @@ app.get('/about',function(req,res)
     res.send("about");
 
 });
+app.get('/index',function(req,res)
+{
+    res.redirect("index.html");
+
+});
 app.get('/',function(req,res)
 {
    res.send("home");
