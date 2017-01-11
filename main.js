@@ -1,37 +1,51 @@
-//var http = require("http");
-var mysql      = require('mysql');
-/*http.createServer(function (request, response) {
+var http = require("http");
+var express = require('express')
+var mysql = require('mysql')
+//var path= require('path')
 
-   // Send the HTTP header
-   // HTTP Status: 200 : OK
-   // Content Type: text/plain
-   response.writeHead(200, {'Content-Type': 'text/plain'});
+var app=express();
 
-   // Send the response body as "Hello World"
-   response.end('Hello World\n');
-}).listen(8081);*/
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : 'root',
   database : 'mydb'
 });
-
-connection.connect(function(err){
-  if(err){
-    console.log('Error connecting to Db');
-    return;
-  }
-  console.log('Connection established');
-});
-connection.query('SELECT * FROM student',function(err,rows){
-  if(err) throw err;
-
-  console.log('Data received from Db:\n');
-  console.log(rows);
-});
-connection.end(function(err) {
+//connection.connect();
+app.get('/about',function(req,res)
+{
+    res.send("about");
 
 });
-// Console will print the message
-//console.log('Server running at http://127.0.0.1:8081/');
+app.get('/',function(req,res)
+{
+   res.send("home");
+
+});
+
+app.get('/:uid',function(req,res)
+{
+    connection.query('SELECT * from student where stuID='+req.params.uid, function(err, rows, fields) {
+    if (!err)
+    {
+      if(rows.length!=0)
+        res.send('The solution is: '+JSON.stringify(rows,'utf8'));
+      //connection.end();
+      else
+      {
+          res.send("no data")
+      }
+    }
+    else
+    {
+        res.end('can not get');
+        //res.redirect("index.html");
+      //  res.end();
+    }
+});
+//connection.end();
+
+});
+
+app.listen(8081);
+console.log('Server running at http://127.0.0.1:8081/');
